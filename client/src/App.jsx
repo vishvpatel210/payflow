@@ -4,7 +4,6 @@ import Login from './pages/Auth/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
 import { Toaster } from 'react-hot-toast';
 
-// Simple protected route to check if user is logged in
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   if (!token) {
