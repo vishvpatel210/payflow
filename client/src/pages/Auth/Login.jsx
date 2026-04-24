@@ -11,20 +11,15 @@ import {
   ShieldCheck,
   Zap
 } from 'lucide-react';
-import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-import { signInWithGoogle } from '../../firebase';
-
-const API_URL = 'http://localhost:5000/api/auth';
+import useAuth from '../../hooks/useAuth';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const { login, register, googleAuth, loading, error, setError } = useAuth();
 
   // Handle Email Login
   const handleLogin = async (e) => {
@@ -33,17 +28,12 @@ const Login = () => {
       toast.error('Please fill in all fields');
       return;
     }
-    setLoading(true);
     try {
-      const res = await axios.post(`${API_URL}/login`, { email, password });
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      await login(email, password);
       toast.success('Login successful! Welcome back.');
-      navigate('/dashboard');
     } catch (err) {
+      // Error is handled in useAuth, but we can also toast it here
       toast.error(err.response?.data?.msg || 'Login failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -58,38 +48,21 @@ const Login = () => {
       toast.error('Password must be at least 6 characters');
       return;
     }
-    setLoading(true);
     try {
-      const res = await axios.post(`${API_URL}/signup`, { email, password });
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      await register(email, password);
       toast.success('Account created successfully!');
-      navigate('/dashboard');
     } catch (err) {
       toast.error(err.response?.data?.msg || 'Signup failed');
-    } finally {
-      setLoading(false);
     }
   };
 
   // Handle Google Sign In
   const handleGoogleSignIn = async () => {
-    setLoading(true);
     try {
-      const googleUser = await signInWithGoogle();
-      // Send Google user info to our backend to create/find user
-      const res = await axios.post(`${API_URL}/google`, {
-        email: googleUser.email,
-        uid: googleUser.uid,
-      });
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      const { googleUser } = await googleAuth();
       toast.success(`Welcome, ${googleUser.displayName || googleUser.email}!`);
-      navigate('/dashboard');
     } catch (err) {
       toast.error(err.response?.data?.msg || 'Google sign-in failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -182,16 +155,22 @@ const Login = () => {
             </p>
           </div>
 
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm text-center font-medium">
+              {error}
+            </div>
+          )}
+
           {/* Login/Signup Toggle */}
           <div className="flex bg-slate-100/80 p-1 rounded-xl mb-10 w-fit mx-auto border border-slate-200">
             <button 
-              onClick={() => setIsLogin(true)}
+              onClick={() => { setIsLogin(true); setError(null); }}
               className={`px-8 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${isLogin ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-500 hover:text-slate-700'}`}
             >
               Login
             </button>
             <button 
-              onClick={() => setIsLogin(false)}
+              onClick={() => { setIsLogin(false); setError(null); }}
               className={`px-8 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${!isLogin ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-500 hover:text-slate-700'}`}
             >
               Sign up
