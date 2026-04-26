@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Users, 
@@ -6,7 +6,9 @@ import {
   Clock,
   TrendingUp,
   FileBarChart,
-  ChevronRight
+  ChevronRight,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import { 
   LineChart, 
@@ -20,28 +22,44 @@ import {
   Cell
 } from 'recharts';
 import Layout from '../../components/Layout/Layout';
-
-const lineChartData = [
-  { name: 'MAR', value: 300000 },
-  { name: 'APR', value: 350000 },
-  { name: 'MAY', value: 450000 },
-  { name: 'JUN', value: 420000 },
-  { name: 'JUL', value: 480000 },
-  { name: 'AUG', value: 428500 },
-];
-
-const pieData = [
-  { name: 'ENGINEERING', value: 65, color: '#4f46e5' },
-  { name: 'MARKETING', value: 20, color: '#818cf8' },
-  { name: 'OPERATIONS', value: 15, color: '#e0e7ff' },
-];
-
-const activityData = [
-  { id: 1, name: 'Sarah Jenkins', role: 'PRODUCT DESIGNER', action: 'Payslip Generated', cycle: 'August Cycle #PAY-8821', status: 'COMPLETED', time: '2 MINS AGO', avatar: '11' },
-  { id: 2, name: 'Michael Chen', role: 'FULL-STACK ENGINEER', action: 'New Hire Added', cycle: 'Onboarding Process 4/5', status: 'PROCESSING', time: '45 MINS AGO', avatar: '12' },
-];
+import useDashboard from '../../hooks/useDashboard';
 
 const Dashboard = () => {
+  const { stats, loading, error } = useDashboard();
+  const [timeRange, setTimeRange] = useState('6 MONTHS');
+
+  const formatCurrency = (value) => {
+    if (!value) return '$0';
+    if (value >= 1000) {
+      return `$${(value / 1000).toFixed(1)}k`;
+    }
+    return `$${value.toLocaleString()}`;
+  };
+
+  if (loading || !stats) {
+    return (
+      <Layout>
+        <div className="flex-1 flex flex-col items-center justify-center h-full min-h-[60vh]">
+          <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mb-4" />
+          <h2 className="text-lg font-bold text-slate-700">Loading Dashboard...</h2>
+          <p className="text-sm text-slate-400">Aggregating payroll metrics</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <div className="flex-1 flex flex-col items-center justify-center h-full min-h-[60vh]">
+          <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
+          <h2 className="text-lg font-bold text-slate-700">Failed to load dashboard</h2>
+          <p className="text-sm text-slate-400">{error}</p>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       {/* Top Cards Row */}
@@ -58,11 +76,11 @@ const Dashboard = () => {
                   <WalletCards className="text-white" size={24} />
                 </div>
                 <div className="flex items-center gap-1 bg-white/20 px-2.5 py-1 rounded-full text-white text-[10px] font-bold tracking-wider">
-                  <TrendingUp size={12} /> 4.2% GROWTH
+                  <TrendingUp size={12} /> {stats.growth}% GROWTH
                 </div>
               </div>
               <p className="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-1 relative z-10">Monthly Payroll Expenditure</p>
-              <h2 className="text-4xl font-bold text-white font-outfit relative z-10">$428.5k</h2>
+              <h2 className="text-4xl font-bold text-white font-outfit relative z-10">{formatCurrency(stats.totalPayroll)}</h2>
             </motion.div>
 
             {/* Secondary Cards Column */}
@@ -78,11 +96,8 @@ const Dashboard = () => {
                   <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                     <Users size={20} />
                   </div>
-                  <div className="bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider">
-                    +12%
-                  </div>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-800 font-outfit">1,284</h3>
+                <h3 className="text-2xl font-bold text-slate-800 font-outfit">{stats.totalEmployees.toLocaleString()}</h3>
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Employees</p>
               </motion.div>
 
@@ -98,12 +113,14 @@ const Dashboard = () => {
                   <div className="p-2 bg-orange-50 text-orange-500 rounded-xl">
                     <Clock size={20} />
                   </div>
-                  <div className="bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider">
-                    URGENT
-                  </div>
+                  {stats.pendingPayments > 0 && (
+                    <div className="bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider">
+                      URGENT
+                    </div>
+                  )}
                 </div>
-                <h3 className="text-2xl font-bold text-slate-800 font-outfit relative z-10">18</h3>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1 relative z-10">Pending</p>
+                <h3 className="text-2xl font-bold text-slate-800 font-outfit relative z-10">{stats.pendingPayments}</h3>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1 relative z-10">Pending Onboarding</p>
               </motion.div>
 
               {/* Wide Card spanning 2 cols */}
@@ -118,8 +135,8 @@ const Dashboard = () => {
                     <FileBarChart size={20} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-slate-800">$92.1k</h3>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Tax Overview (Q3)</p>
+                    <h3 className="text-lg font-bold text-slate-800">{formatCurrency(stats.taxOverview)}</h3>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Tax Overview (Total Base)</p>
                   </div>
                 </div>
                 <ChevronRight className="text-slate-300" size={20} />
@@ -142,18 +159,28 @@ const Dashboard = () => {
                   <p className="text-xs text-slate-400">Monthly expenditure breakdown</p>
                 </div>
                 <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-100">
-                  <button className="px-4 py-1.5 bg-white shadow-sm rounded-lg text-xs font-bold text-slate-800">6 MONTHS</button>
-                  <button className="px-4 py-1.5 text-slate-400 hover:text-slate-600 text-xs font-bold">1 YEAR</button>
+                  <button 
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold ${timeRange === '6 MONTHS' ? 'bg-white shadow-sm text-slate-800' : 'text-slate-400 hover:text-slate-600'}`}
+                    onClick={() => setTimeRange('6 MONTHS')}
+                  >
+                    6 MONTHS
+                  </button>
+                  <button 
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold ${timeRange === '1 YEAR' ? 'bg-white shadow-sm text-slate-800' : 'text-slate-400 hover:text-slate-600'}`}
+                    onClick={() => setTimeRange('1 YEAR')}
+                  >
+                    1 YEAR
+                  </button>
                 </div>
               </div>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={lineChartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <LineChart data={stats.payrollTrends} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} dy={10} />
                     <Tooltip 
                       contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                      formatter={(value) => [`$${value.toLocaleString()}`, 'Expenditure']}
+                      formatter={(value) => [formatCurrency(value), 'Expenditure']}
                     />
                     <Line 
                       type="monotone" 
@@ -177,14 +204,14 @@ const Dashboard = () => {
             >
               <div>
                 <h3 className="text-lg font-bold text-slate-800 font-outfit">Department Split</h3>
-                <p className="text-xs text-slate-400">Monthly allocation</p>
+                <p className="text-xs text-slate-400">Headcount allocation</p>
               </div>
               <div className="flex-1 flex flex-col items-center justify-center relative my-4">
                 <div className="h-48 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={pieData}
+                        data={stats.departmentSplit}
                         cx="50%"
                         cy="50%"
                         innerRadius={60}
@@ -193,7 +220,7 @@ const Dashboard = () => {
                         dataKey="value"
                         stroke="none"
                       >
-                        {pieData.map((entry, index) => (
+                        {stats.departmentSplit.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
@@ -202,13 +229,13 @@ const Dashboard = () => {
                   </ResponsiveContainer>
                 </div>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-xl font-bold text-slate-800 font-outfit">$428k</span>
-                  <span className="text-[8px] font-bold text-slate-400 tracking-widest uppercase">Total</span>
+                  <span className="text-xl font-bold text-slate-800 font-outfit">{formatCurrency(stats.totalPayroll)}</span>
+                  <span className="text-[8px] font-bold text-slate-400 tracking-widest uppercase">Total Base</span>
                 </div>
               </div>
               
               <div className="space-y-3">
-                {pieData.map((item, i) => (
+                {stats.departmentSplit.map((item, i) => (
                   <div key={i} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
@@ -246,12 +273,12 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
-                    {activityData.map((row) => (
+                    {stats.recentActivity.map((row) => (
                       <tr key={row.id} className="hover:bg-slate-50/50 transition-colors">
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-3">
                             <div className="relative">
-                              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${row.avatar}`} alt={row.name} className="w-10 h-10 rounded-full bg-slate-100" />
+                              <img src={row.avatar} alt={row.name} className="w-10 h-10 rounded-full bg-slate-100 object-cover" />
                               <div className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${row.status === 'COMPLETED' ? 'bg-emerald-400' : 'bg-indigo-400'}`}></div>
                             </div>
                             <div>
@@ -266,7 +293,8 @@ const Dashboard = () => {
                         </td>
                         <td className="py-4 px-6">
                           <span className={`px-3 py-1 rounded-full text-[9px] font-bold tracking-widest uppercase ${
-                            row.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-600' : 'bg-indigo-50 text-indigo-600'
+                            row.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-600' : 
+                            row.status === 'PAUSED' ? 'bg-slate-100 text-slate-600' : 'bg-indigo-50 text-indigo-600'
                           }`}>
                             {row.status}
                           </span>
@@ -278,6 +306,11 @@ const Dashboard = () => {
                     ))}
                   </tbody>
                 </table>
+                {stats.recentActivity.length === 0 && (
+                  <div className="py-10 text-center">
+                    <p className="text-sm text-slate-400 font-medium">No recent activity found.</p>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
