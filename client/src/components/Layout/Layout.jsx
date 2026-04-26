@@ -53,10 +53,10 @@ const Layout = ({ children }) => {
               <Users size={18} />
               <span className="text-sm">Employees</span>
             </Link>
-            <a href="#" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-xl font-medium transition-colors">
+            <Link to="/payroll" className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${isActive('/payroll') ? 'bg-white text-indigo-600 shadow-sm border border-slate-100' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
               <Wallet size={18} />
               <span className="text-sm">Payroll</span>
-            </a>
+            </Link>
             <a href="#" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-xl font-medium transition-colors">
               <FileBarChart size={18} />
               <span className="text-sm">Reports</span>
