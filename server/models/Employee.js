@@ -1,55 +1,44 @@
 const mongoose = require('mongoose');
 
-const EmployeeSchema = new mongoose.Schema({
-  name: {
+const employeeSchema = new mongoose.Schema({
+  name: { 
+    type: String, 
+    required: true 
+  },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  avatar: { 
+    type: String 
+  },
+  role: { 
+    type: String, 
+    required: true 
+  },
+  department: { 
     type: String,
-    required: true,
-    trim: true,
+    enum: ['Engineering', 'Design Ops', 'Operations', 'Marketing']
   },
-  email: {
+  baseSalary: { 
+    type: Number, 
+    required: true 
+  },
+  status: { 
     type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
+    enum: ['Active', 'Onboarding', 'Leave'],
+    default: 'Active'
   },
-  avatar: {
-    type: String,
-    default: '',
+  joiningDate: { 
+    type: Date 
   },
-  role: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  department: {
-    type: String,
-    required: true,
-    enum: ['Engineering', 'Marketing', 'Operations', 'Design Ops', 'Finance', 'HR'],
-    trim: true,
-  },
-  baseSalary: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-  status: {
-    type: String,
-    enum: ['Active', 'Onboarding', 'Leave', 'Pending', 'Terminated'],
-    default: 'Active',
-  },
-  joiningDate: {
-    type: Date,
-    default: Date.now,
-  },
-  taxPercent: {
-    type: Number,
-    default: 20,
-    min: 0,
-    max: 100,
-  },
+  taxPercent: { 
+    type: Number, 
+    default: 20 
+  }
 }, {
-  timestamps: true,
+  timestamps: true
 });
 
-module.exports = mongoose.model('Employee', EmployeeSchema);
+module.exports = mongoose.model('Employee', employeeSchema);
