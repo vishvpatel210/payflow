@@ -5,14 +5,18 @@ require('dotenv').config();
 
 const app = express();
 
+const authRoutes = require('./routes/auth');
+const employeeRoutes = require('./routes/employeeRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/employees', require('./routes/employeeRoutes'));
-app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/auth', authRoutes);
+app.use('/api/employees', employeeRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
