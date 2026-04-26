@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Employees from './pages/Employees/Employees';
 import AddEmployee from './pages/Employees/AddEmployee';
 import Payroll from './pages/Payroll/Payroll';
+import Configuration from './pages/Configuration/Configuration';
 import { Toaster } from 'react-hot-toast';
 
 const ProtectedRoute = ({ children }) => {
@@ -50,6 +51,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Payroll />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/configuration" 
+          element={
+            <ProtectedRoute>
+              <Configuration />
             </ProtectedRoute>
           } 
         />
