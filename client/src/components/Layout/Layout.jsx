@@ -61,10 +61,10 @@ const Layout = ({ children }) => {
               <FileBarChart size={18} />
               <span className="text-sm">Reports</span>
             </a>
-            <a href="#" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-xl font-medium transition-colors">
+            <Link to="/configuration" className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${isActive('/configuration') ? 'bg-white text-indigo-600 shadow-sm border border-slate-100' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
               <Settings2 size={18} />
               <span className="text-sm">Configuration</span>
-            </a>
+            </Link>
             <a href="#" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-xl font-medium transition-colors">
               <Settings size={18} />
               <span className="text-sm">Settings</span>
