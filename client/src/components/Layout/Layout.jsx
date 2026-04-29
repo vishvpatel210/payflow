@@ -65,20 +65,20 @@ const Layout = ({ children }) => {
               <Settings2 size={18} />
               <span className="text-sm">Configuration</span>
             </Link>
-            <a href="#" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-xl font-medium transition-colors">
+            <Link to="/settings" className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${isActive('/settings') ? 'bg-white text-indigo-600 shadow-sm border border-slate-100' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
               <Settings size={18} />
               <span className="text-sm">Settings</span>
-            </a>
+            </Link>
           </nav>
         </div>
 
         <div className="p-6 space-y-3">
-          <button className="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors shadow-md shadow-indigo-500/20 text-sm">
+          <Link to="/payroll" className="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors shadow-md shadow-indigo-500/20 text-sm">
             <Zap size={16} /> Process Payroll
-          </button>
-          <button className="w-full py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm text-sm">
+          </Link>
+          <Link to="/employees/new" className="w-full py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm text-sm">
             <UserPlus size={16} /> Add Employee
-          </button>
+          </Link>
           <div className="pt-4 border-t border-slate-200 mt-4">
             <a href="#" className="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-slate-800 text-xs font-semibold uppercase tracking-wider transition-colors">
               <HelpCircle size={14} /> Help Center
@@ -119,9 +119,9 @@ const Layout = ({ children }) => {
                 <Bell size={20} />
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
               </button>
-              <button className="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+              <Link to="/settings" className="p-2 text-slate-400 hover:text-slate-600 transition-colors">
                 <Settings2 size={20} />
-              </button>
+              </Link>
               
               <div className="h-8 w-px bg-slate-200 mx-2"></div>
               
