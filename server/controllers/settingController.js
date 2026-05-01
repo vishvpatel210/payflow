@@ -1,4 +1,5 @@
 const Setting = require('../models/Setting');
+const Activity = require('../models/Activity');
 
 // @route   GET /api/settings
 // @desc    Get all settings
@@ -30,6 +31,13 @@ exports.updateSettings = async (req, res) => {
       Object.assign(settings, req.body);
     }
     await settings.save();
+
+    await Activity.create({
+      action: 'Settings Updated',
+      description: 'Global system configuration was modified',
+      status: 'Completed'
+    });
+
     res.json(settings);
   } catch (err) {
     console.error(err.message);

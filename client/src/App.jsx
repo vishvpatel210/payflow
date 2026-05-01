@@ -8,6 +8,7 @@ import Payroll from './pages/Payroll/Payroll';
 import Reports from './pages/Reports/Reports';
 import Configuration from './pages/Configuration/Configuration';
 import Settings from './pages/Settings/Settings';
+import History from './pages/History/History';
 import { Toaster } from 'react-hot-toast';
 
 const ProtectedRoute = ({ children }) => {
@@ -18,11 +19,14 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+import { SettingsProvider } from './context/SettingsContext';
+
 function App() {
   return (
     <BrowserRouter>
       <Toaster position="top-right" reverseOrder={false} />
-      <Routes>
+      <SettingsProvider>
+        <Routes>
         <Route path="/" element={<Login />} />
         <Route 
           path="/dashboard" 
@@ -80,7 +84,16 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/history" 
+          element={
+            <ProtectedRoute>
+              <History />
+            </ProtectedRoute>
+          } 
+        />
       </Routes>
+      </SettingsProvider>
     </BrowserRouter>
   );
 }

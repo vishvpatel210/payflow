@@ -34,6 +34,9 @@ import {
 import Layout from '../../components/Layout/Layout';
 import useDashboard from '../../hooks/useDashboard';
 import usePayroll from '../../hooks/usePayroll';
+import { useGlobalSettings } from '../../context/SettingsContext';
+import { exportMonthlyPayrollPDF } from '../../utils/exportPDF';
+import toast from 'react-hot-toast';
 
 /* ─── Components ─────────────────────────────────────────── */
 const StatCard = ({ label, value, change, isPositive, icon: Icon, color }) => (
@@ -69,20 +72,14 @@ const Reports = () => {
   const [selectedMonth, setSelectedMonth] = useState(MONTHS[now.getMonth()]);
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
   const { stats, loading: statsLoading } = useDashboard(selectedMonth, selectedYear);
-  const { payrollHistory, fetchPayrollHistory } = usePayroll();
+  const { payrollData, payrollHistory, fetchPayrollHistory } = usePayroll(selectedMonth, selectedYear);
+  const { formatCurrency } = useGlobalSettings();
   const [timeRange, setTimeRange] = useState('Monthly');
 
   useEffect(() => {
     fetchPayrollHistory();
   }, [fetchPayrollHistory]);
 
-  const formatCurrency = (amount) =>
-    new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount || 0);
 
   if (statsLoading) {
     return (
@@ -134,7 +131,21 @@ const Reports = () => {
               )}
             </div>
           </div>
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all flex items-center gap-2 w-fit">
+          <button 
+            onClick={() => {
+              toast.success('Generating PDF...');
+              exportMonthlyPayrollPDF({
+                month: selectedMonth,
+                year: selectedYear,
+                totalPayroll: stats?.totalPayroll,
+                totalEmployees: stats?.totalEmployees,
+                avgSalary: stats?.avgSalary,
+                totalDeductions: stats?.taxOverview,
+                employees: payrollData?.employees || []
+              });
+            }}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all flex items-center gap-2 w-fit"
+          >
             <Download size={18} />
             Export Report
           </button>
@@ -331,7 +342,21 @@ const Reports = () => {
                       </span>
                     </td>
                     <td className="px-8 py-6 text-right">
-                      <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all">
+                      <button 
+                        onClick={() => {
+                          toast.success('Generating PDF...');
+                          exportMonthlyPayrollPDF({
+                            month: report.month,
+                            year: report.year,
+                            totalPayroll: report.totalSalary || report.netPayroll,
+                            totalEmployees: report.employeeCount,
+                            avgSalary: report.employeeCount > 0 ? (report.totalSalary || report.netPayroll) / report.employeeCount : 0,
+                            totalDeductions: (report.totalSalary && report.netPayroll) ? report.totalSalary - report.netPayroll : 0,
+                            employees: []
+                          });
+                        }}
+                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                      >
                         <Download size={18} />
                       </button>
                     </td>

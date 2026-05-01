@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const ActivitySchema = new mongoose.Schema({
   employeeId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Employee',
-    required: true,
+    ref: 'Employee'
   },
   action: {
     type: String,

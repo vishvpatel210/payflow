@@ -23,6 +23,7 @@ import {
 } from 'recharts';
 import Layout from '../../components/Layout/Layout';
 import useDashboard from '../../hooks/useDashboard';
+import { useGlobalSettings } from '../../context/SettingsContext';
 
 const Dashboard = () => {
   const now = new Date();
@@ -35,15 +36,9 @@ const Dashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState(MONTHS[now.getMonth()]);
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
   const { stats, loading, error } = useDashboard(selectedMonth, selectedYear);
+  const { settings, formatCurrency } = useGlobalSettings();
   const [timeRange, setTimeRange] = useState('6 MONTHS');
 
-  const formatCurrency = (amount) =>
-    new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount || 0);
 
   if (loading || !stats) {
     return (

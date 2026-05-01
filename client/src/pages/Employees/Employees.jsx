@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   Search, Plus, ChevronLeft, ChevronRight, Briefcase, 
   ChevronDown, Filter, TrendingUp, Trash2, Loader2 
@@ -8,11 +8,20 @@ import {
 import Layout from '../../components/Layout/Layout';
 import useEmployees from '../../hooks/useEmployees';
 import useDashboard from '../../hooks/useDashboard';
+import { useGlobalSettings } from '../../context/SettingsContext';
 
 const Employees = () => {
   const { employees, pagination, loading, fetchEmployees, removeEmployee } = useEmployees();
   const { stats, loading: statsLoading } = useDashboard();
-  const [filters, setFilters] = useState({ search: '', department: '', status: '', page: 1 });
+  const { formatCurrency } = useGlobalSettings();
+  const location = useLocation();
+  const initialSearch = new URLSearchParams(location.search).get('search') || '';
+  const [filters, setFilters] = useState({ search: initialSearch, department: '', status: '', page: 1 });
+
+  useEffect(() => {
+    const currentSearch = new URLSearchParams(location.search).get('search') || '';
+    setFilters(prev => ({ ...prev, search: currentSearch, page: 1 }));
+  }, [location.search]);
 
   // Debounced fetch
   useEffect(() => {
@@ -28,8 +37,6 @@ const Employees = () => {
     }
   };
 
-  const formatCurrency = (val) => 
-    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
 
   return (
     <Layout>

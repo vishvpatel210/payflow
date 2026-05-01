@@ -1,4 +1,5 @@
 const Employee = require('../models/Employee');
+const Activity = require('../models/Activity');
 
 // GET /api/employees
 exports.getAllEmployees = async (req, res) => {
@@ -61,6 +62,14 @@ exports.createEmployee = async (req, res) => {
     const newEmployee = new Employee(req.body);
     const savedEmployee = await newEmployee.save();
     
+    // Log activity
+    await Activity.create({
+      employeeId: savedEmployee._id,
+      action: 'Employee Added',
+      description: `Added ${savedEmployee.name} to ${savedEmployee.department || 'Directory'}`,
+      status: savedEmployee.status === 'Active' ? 'Completed' : 'Processing'
+    });
+
     res.status(201).json(savedEmployee);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -77,6 +86,14 @@ exports.updateEmployee = async (req, res) => {
     );
     if (!updatedEmployee) return res.status(404).json({ message: 'Employee not found' });
     
+    // Log activity
+    await Activity.create({
+      employeeId: updatedEmployee._id,
+      action: 'Employee Updated',
+      description: `Updated profile for ${updatedEmployee.name}`,
+      status: 'Completed'
+    });
+
     res.status(200).json(updatedEmployee);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -89,6 +106,13 @@ exports.deleteEmployee = async (req, res) => {
     const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
     if (!deletedEmployee) return res.status(404).json({ message: 'Employee not found' });
     
+    // Log activity
+    await Activity.create({
+      action: 'Employee Removed',
+      description: `Removed ${deletedEmployee.name} from directory`,
+      status: 'Completed'
+    });
+
     res.status(200).json({ message: 'Employee deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
