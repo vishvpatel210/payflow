@@ -75,7 +75,7 @@ const Login = () => {
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="hidden md:flex md:w-[45%] lg:w-[40%] shrink-0 indigo-gradient p-12 flex-col justify-between relative"
+        className="hidden md:flex md:w-[45%] lg:w-[40%] shrink-0 indigo-gradient p-8 lg:p-12 flex-col justify-between relative"
       >
         {/* Background Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
@@ -134,7 +134,34 @@ const Login = () => {
       </motion.div>
 
       {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-4 md:p-8 lg:p-12 bg-slate-50 relative overflow-hidden">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 bg-slate-50 relative overflow-hidden">
+        
+        {/* Mobile Branding Section */}
+        <motion.div 
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="md:hidden w-full max-w-[750px] mb-6 indigo-gradient p-8 rounded-3xl shadow-xl relative overflow-hidden"
+        >
+          {/* Background Decorative Elements for mobile branding */}
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-10">
+            <div className="absolute top-[-20%] right-[-10%] w-48 h-48 rounded-full bg-white blur-2xl" />
+          </div>
+          
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
+                <Zap className="text-indigo-600 fill-indigo-600" size={24} />
+              </div>
+              <span className="text-xl font-bold text-white tracking-tight font-outfit">PayFlow</span>
+            </div>
+            <h1 className="text-3xl font-bold text-white leading-tight mb-2 font-outfit">
+              The Atelier of Payroll.
+            </h1>
+            <p className="text-indigo-100 text-sm font-light leading-relaxed">
+              Elevating financial operations with precision.
+            </p>
+          </div>
+        </motion.div>
         {/* Abstract shapes for decoration */}
         <div className="absolute top-[15%] right-[-5%] w-64 h-64 border-[30px] border-indigo-100/30 rounded-full blur-sm" />
         <div className="absolute bottom-[10%] left-[-5%] w-40 h-40 border-[20px] border-slate-200/50 rounded-full blur-sm" />
@@ -144,7 +171,7 @@ const Login = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-[750px] glass-card rounded-3xl p-6 md:p-10 relative z-10 shadow-2xl shadow-indigo-900/5"
+          className="w-full max-w-[750px] glass-card rounded-3xl p-6 sm:p-10 relative z-10 shadow-2xl shadow-indigo-900/5"
         >
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2 font-outfit">

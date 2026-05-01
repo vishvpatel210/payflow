@@ -54,9 +54,10 @@ const Configuration = () => {
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
+            className="text-center lg:text-left"
           >
             <h1 className="text-3xl font-bold text-slate-800 font-outfit mb-2">Tax & Salary Configuration</h1>
-            <p className="text-sm text-slate-500 max-w-lg leading-relaxed">
+            <p className="text-sm text-slate-500 max-w-lg lg:max-w-none leading-relaxed mx-auto lg:mx-0">
               Manage earnings and deductions applied during payroll to ensure accurate employee compensation.
             </p>
           </motion.div>
@@ -64,12 +65,12 @@ const Configuration = () => {
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-8 text-sm font-bold text-slate-500"
+            className="flex items-center justify-center lg:justify-end gap-6 sm:gap-8 text-sm font-bold text-slate-500 overflow-x-auto pb-2 lg:pb-0"
           >
-            <button className="hover:text-slate-800 transition-colors">Earnings</button>
-            <button className="hover:text-slate-800 transition-colors">Deductions</button>
+            <button className="hover:text-slate-800 transition-colors whitespace-nowrap">Earnings</button>
+            <button className="hover:text-slate-800 transition-colors whitespace-nowrap">Deductions</button>
             <div className="relative text-indigo-600">
-              <button>Compliance</button>
+              <button className="whitespace-nowrap">Compliance</button>
               <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-indigo-600 rounded-full shadow-[0_2px_8px_rgba(79,70,229,0.4)]"></div>
             </div>
           </motion.div>
@@ -94,18 +95,18 @@ const Configuration = () => {
               </div>
               
               <div>
-                <div className="flex justify-between items-center mb-3">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2 sm:gap-0">
                   <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Performance Bonus</label>
-                  <div className="flex bg-white p-1 rounded-xl shadow-sm border border-slate-100">
+                  <div className="flex bg-white p-1 rounded-xl shadow-sm border border-slate-100 w-full sm:w-auto">
                     <button 
                       onClick={() => setBonusType('fixed')}
-                      className={`px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all ${bonusType === 'fixed' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
+                      className={`flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all ${bonusType === 'fixed' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
                     >
                       Fixed (₹)
                     </button>
                     <button 
                       onClick={() => setBonusType('percentage')}
-                      className={`px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all ${bonusType === 'percentage' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
+                      className={`flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all ${bonusType === 'percentage' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
                     >
                       Percentage (%)
                     </button>
@@ -236,12 +237,12 @@ const Configuration = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="flex items-center gap-4 pt-4"
+              className="flex flex-col sm:flex-row items-center gap-4 pt-4"
             >
-              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/30">
+              <button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/30">
                 Save Changes
               </button>
-              <button className="bg-[#F8FAFC] hover:bg-slate-100 text-slate-600 px-8 py-3.5 rounded-xl font-bold text-sm transition-all">
+              <button className="w-full sm:w-auto bg-[#F8FAFC] hover:bg-slate-100 text-slate-600 px-8 py-3.5 rounded-xl font-bold text-sm transition-all">
                 Reset
               </button>
             </motion.div>
