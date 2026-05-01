@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Wallet,
@@ -20,17 +21,9 @@ import {
 } from 'lucide-react';
 import Layout from '../../components/Layout/Layout';
 import usePayroll from '../../hooks/usePayroll';
+import { useGlobalSettings } from '../../context/SettingsContext';
 
 /* ─── Formatters ─────────────────────────────────────────── */
-const formatCurrency = (amount) =>
-  new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    minimumFractionDigits: 0,
-  }).format(amount || 0);
-
-const formatDeduction = (amount) => `-${formatCurrency(amount)}`;
-
 const formatDate = (date) => {
   if (!date) return 'TBD';
   return new Date(date).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -49,7 +42,14 @@ const Payroll = () => {
   const now = new Date();
   const [selectedMonth, setSelectedMonth] = useState(MONTHS[now.getMonth()]);
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
-  const [searchTerm, setSearchTerm] = useState('');
+  const location = useLocation();
+  const initialSearch = new URLSearchParams(location.search).get('search') || '';
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+
+  useEffect(() => {
+    const currentSearch = new URLSearchParams(location.search).get('search') || '';
+    setSearchTerm(currentSearch);
+  }, [location.search]);
 
   const {
     payrollData,
@@ -63,6 +63,9 @@ const Payroll = () => {
     payrollHistory,
     getDefaultPayroll,
   } = usePayroll(selectedMonth, selectedYear);
+
+  const { settings, formatCurrency } = useGlobalSettings();
+  const formatDeduction = (amount) => `-${formatCurrency(amount)}`;
 
   // Local data or default
   const data = payrollData || {
@@ -348,7 +351,9 @@ const Payroll = () => {
         <div className="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-xl shadow-indigo-600/20 flex flex-col justify-between min-h-[220px]">
           <div>
             <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-widest mb-3">Next Payroll Cycle</p>
-            <h3 className="text-4xl font-bold font-outfit mb-2">{formatDate(data.nextPayCycle)}</h3>
+            <h3 className="text-4xl font-bold font-outfit mb-2">
+              {formatDate(new Date(now.getFullYear(), now.getMonth() + 1, settings?.payroll?.cycleDate || 15))}
+            </h3>
             <p className="text-xs text-indigo-100 opacity-80 leading-relaxed">
               Payments will be automatically initiated for all pending employees on this date.
             </p>

@@ -1,9 +1,11 @@
 const Employee = require('../models/Employee');
 const Payroll = require('../models/Payroll');
+const Setting = require('../models/Setting');
 
 // GET /api/dashboard/stats
 exports.getDashboardStats = async (req, res) => {
   try {
+    const settings = await Setting.findOne() || new Setting();
     const { month, year } = req.query;
     
     // Fetch all employees for master stats
@@ -47,7 +49,8 @@ exports.getDashboardStats = async (req, res) => {
         if (emp.status === 'Active') {
           const salary = emp.baseSalary || 0;
           totalPayroll += salary;
-          const empTaxRate = emp.taxPercent != null ? emp.taxPercent : 10;
+          const defaultTaxRate = settings.tax?.incomeTaxPercent || 10;
+          const empTaxRate = emp.taxPercent != null ? emp.taxPercent : defaultTaxRate;
           taxOverview += (salary * empTaxRate) / 100;
           activeInPayroll++;
         }
@@ -77,7 +80,7 @@ exports.getDashboardStats = async (req, res) => {
     const expenseBreakdown = [
       { name: 'Salaries', value: netPayroll, color: '#6366f1' },
       { name: 'Taxes', value: taxOverview, color: '#818cf8' },
-      { name: 'Benefits', value: totalPayroll * 0.05, color: '#c7d2fe' },
+      { name: 'Benefits', value: totalPayroll * (settings.tax?.otherDeductionsPercent / 100 || 0.05), color: '#c7d2fe' },
     ];
 
     // Trends (From historical payroll records)

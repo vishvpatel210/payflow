@@ -1,10 +1,14 @@
 const Payroll = require('../models/Payroll');
 const Employee = require('../models/Employee');
+const Setting = require('../models/Setting');
+const Activity = require('../models/Activity');
 
 // POST /api/payroll/process
 exports.processPayroll = async (req, res) => {
   try {
-    const { taxPercent: globalTaxPercent = 10, month, year } = req.body || {};
+    const settings = await Setting.findOne() || new Setting();
+    const defaultTax = settings.tax?.incomeTaxPercent || 10;
+    const { taxPercent: globalTaxPercent = defaultTax, month, year } = req.body || {};
 
     // Fetch only active employees for payroll processing
     const employees = await Employee.find({ status: 'Active' });
@@ -86,6 +90,14 @@ exports.processPayroll = async (req, res) => {
     }
 
     await payroll.save();
+
+    // Log Activity
+    await Activity.create({
+      action: 'Payroll Processed',
+      description: `Processed ${currentMonth} ${currentYear} payroll for ${employeeSnapshots.length} employees`,
+      status: 'Completed'
+    });
+
     res.status(payroll.isNew ? 201 : 200).json(payroll);
   } catch (err) {
     console.error('processPayroll error:', err.message);
