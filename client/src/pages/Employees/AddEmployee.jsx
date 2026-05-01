@@ -115,7 +115,7 @@ const AddEmployee = () => {
         <motion.div 
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-white rounded-3xl shadow-sm border border-slate-100 p-10 mb-8 relative overflow-hidden"
+          className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 sm:p-10 mb-8 relative overflow-hidden"
         >
            <div className="absolute top-8 right-8 w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center border border-slate-100">
              <UserPlus size={20} />
@@ -125,7 +125,7 @@ const AddEmployee = () => {
               <div className="mb-10">
                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Employee Avatar</label>
                 <div 
-                  className="border-2 border-dashed border-indigo-200 rounded-2xl bg-[#F8FAFC] p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-indigo-50 transition-colors"
+                  className="border-2 border-dashed border-indigo-200 rounded-2xl bg-[#F8FAFC] p-6 sm:p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-indigo-50 transition-colors"
                   onClick={() => fileInputRef.current?.click()}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -312,11 +312,11 @@ const AddEmployee = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-5 pt-6 mt-4">
-                <button type="button" onClick={() => navigate('/employees')} className="px-6 py-3.5 text-sm font-bold text-slate-700 hover:text-slate-900 transition-colors">
+              <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 sm:gap-5 pt-6 mt-4">
+                <button type="button" onClick={() => navigate('/employees')} className="w-full sm:w-auto px-6 py-3.5 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors">
                   Cancel
                 </button>
-                <button type="submit" disabled={loading} className="px-8 py-3.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/30 flex items-center gap-2 transition-all disabled:opacity-70">
+                <button type="submit" disabled={loading} className="w-full sm:w-auto px-8 py-3.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2 transition-all disabled:opacity-70">
                   <UserPlus size={18} />
                   {loading ? 'Adding...' : 'Add Employee'}
                 </button>

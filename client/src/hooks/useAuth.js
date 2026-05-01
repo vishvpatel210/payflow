@@ -82,7 +82,13 @@ const useAuth = () => {
     }
   };
 
-  return { login, register, googleAuth, loading, error, setError };
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/');
+  };
+
+  return { login, register, googleAuth, logout, loading, error, setError };
 };
 
 export default useAuth;

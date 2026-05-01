@@ -42,15 +42,19 @@ const Employees = () => {
     <Layout>
       <div className="flex justify-between items-end mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-slate-800 font-outfit mb-2">Employee Directory</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-800 font-outfit mb-2">Employee Directory</h1>
           <p className="text-slate-500 font-medium text-sm">Manage your atelier's talent and organizational structure.</p>
         </div>
-        <Link to="/employees/new" className="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors shadow-md shadow-indigo-500/20 text-sm">
+        <Link to="/employees/new" className="hidden md:flex px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors shadow-md shadow-indigo-500/20 text-sm">
           <Plus size={18} /> Add New Employee
+        </Link>
+        {/* Mobile FAB */}
+        <Link to="/employees/new" className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-indigo-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/40 z-50">
+          <Plus size={24} />
         </Link>
       </div>
 
-      <div className="flex gap-4 mb-6">
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="relative flex-1 group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
           <input 
@@ -101,7 +105,7 @@ const Employees = () => {
       </div>
 
       <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden mb-8">
-        <div className="bg-slate-50 border-b border-slate-100 px-8 py-4 flex text-xs font-bold text-slate-400 uppercase tracking-widest">
+        <div className="hidden md:flex bg-slate-50 border-b border-slate-100 px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">
           <div className="flex-[2]">EMPLOYEE</div>
           <div className="flex-1">ROLE & DEPT</div>
           <div className="flex-1">COMPENSATION</div>
@@ -127,32 +131,42 @@ const Employees = () => {
           )}
 
           {employees.map((emp) => (
-            <div key={emp._id} className="flex items-center px-8 py-6 hover:bg-slate-50/50 transition-colors group">
-              <div className="flex-[2] flex items-center gap-4">
+            <div key={emp._id} className="flex flex-col md:flex-row md:items-center p-6 md:px-8 hover:bg-slate-50/50 transition-colors group gap-4 md:gap-0">
+              <div className="flex-[2] flex items-start md:items-center gap-4">
                 <img 
                   src={emp.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${emp.name}`} 
                   alt={emp.name} 
                   className="w-12 h-12 rounded-full border-2 border-slate-100 bg-slate-50 object-cover" 
                 />
-                <div>
-                  <h3 className="text-base font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{emp.name}</h3>
-                  <p className="text-xs font-medium text-slate-500 mt-0.5">{emp.email}</p>
+                <div className="flex-1 flex justify-between items-start md:items-center md:block">
+                  <div>
+                    <h3 className="text-base font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{emp.name}</h3>
+                    <p className="text-xs font-medium text-slate-500 mt-0.5">{emp.email}</p>
+                  </div>
+                  <button 
+                    onClick={() => handleDelete(emp._id, emp.name)}
+                    className="md:hidden text-slate-300 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50 -mt-2 -mr-2"
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </div>
               </div>
               
-              <div className="flex-1">
-                <p className="text-sm font-medium text-slate-700">{emp.role}</p>
-                <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-1">{emp.department}</p>
+              <div className="grid grid-cols-2 gap-4 md:flex md:flex-[2] w-full items-center">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-slate-700">{emp.role}</p>
+                  <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-1">{emp.department}</p>
+                </div>
+                
+                <div className="flex-1">
+                  <p className="text-base font-bold text-slate-800">
+                    {formatCurrency(emp.baseSalary)}
+                  </p>
+                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">ANNUAL SALARY</p>
+                </div>
               </div>
               
-              <div className="flex-1">
-                <p className="text-base font-bold text-slate-800">
-                  {formatCurrency(emp.baseSalary)}
-                </p>
-                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">ANNUAL SALARY</p>
-              </div>
-              
-              <div className="w-32">
+              <div className="flex justify-between items-center md:w-32 w-full mt-2 md:mt-0 pt-4 md:pt-0 border-t border-slate-100 md:border-0">
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-bold tracking-widest uppercase ${
                   emp.status === 'Active' ? 'bg-emerald-50 text-emerald-600' : 
                   emp.status === 'Onboarding' ? 'bg-amber-50 text-amber-600' : 
@@ -167,7 +181,7 @@ const Employees = () => {
                 </span>
               </div>
               
-              <div className="w-10 flex justify-end">
+              <div className="hidden md:flex w-10 justify-end">
                 <button 
                   onClick={() => handleDelete(emp._id, emp.name)}
                   className="text-slate-300 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"

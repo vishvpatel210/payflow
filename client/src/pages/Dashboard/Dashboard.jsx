@@ -109,7 +109,7 @@ const Dashboard = () => {
             <motion.div 
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="col-span-1 md:col-span-1 lg:col-span-1 rounded-3xl p-6 relative overflow-hidden bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-lg shadow-indigo-500/30"
+              className="col-span-1 md:col-span-1 rounded-3xl p-6 relative overflow-hidden bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-lg shadow-indigo-500/30"
             >
               <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
               <div className="flex justify-between items-start mb-4 relative z-10">
@@ -125,7 +125,7 @@ const Dashboard = () => {
             </motion.div>
 
             {/* Secondary Cards Column */}
-            <div className="col-span-2 grid grid-cols-2 gap-6">
+            <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Card 2 */}
               <motion.div 
                 initial={{ y: 20, opacity: 0 }}
@@ -169,7 +169,7 @@ const Dashboard = () => {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="col-span-2 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between"
+                className="col-span-1 sm:col-span-2 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
@@ -192,7 +192,7 @@ const Dashboard = () => {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-slate-100"
+              className="col-span-1 lg:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-slate-100"
             >
               <div className="flex justify-between items-start mb-8">
                 <div>
@@ -308,7 +308,7 @@ const Dashboard = () => {
                   <thead>
                     <tr className="border-b border-slate-100">
                       <th className="py-4 px-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Employee</th>
-                      <th className="py-4 px-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Activity Type</th>
+                      <th className="py-4 px-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden sm:table-cell">Activity Type</th>
                       <th className="py-4 px-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
                       <th className="py-4 px-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Timestamp</th>
                     </tr>
@@ -328,7 +328,7 @@ const Dashboard = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="py-4 px-6">
+                        <td className="py-4 px-6 hidden sm:table-cell">
                           <p className="text-sm font-medium text-slate-700">{row.action}</p>
                           <p className="text-xs text-slate-400">{row.cycle}</p>
                         </td>

@@ -144,15 +144,15 @@ const Reports = () => {
                 employees: payrollData?.employees || []
               });
             }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all flex items-center gap-2 w-fit"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white p-3 sm:px-6 sm:py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 w-fit"
           >
             <Download size={18} />
-            Export Report
+            <span className="hidden sm:inline">Export Report</span>
           </button>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <StatCard 
             label="Total Payroll" 
             value={formatCurrency(stats?.totalPayroll)} 
@@ -210,7 +210,7 @@ const Reports = () => {
               </div>
             </div>
             
-            <div className="h-[300px] w-full">
+            <div className="h-[250px] sm:h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={stats?.payrollTrends}>
                   <defs>
@@ -312,7 +312,7 @@ const Reports = () => {
                 <tr className="border-b border-slate-50">
                   <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Month / Cycle</th>
                   <th className="px-6 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Payroll</th>
-                  <th className="px-6 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Employees Paid</th>
+                  <th className="px-6 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center hidden sm:table-cell">Employees Paid</th>
                   <th className="px-6 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Status</th>
                   <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Action</th>
                 </tr>
@@ -332,7 +332,7 @@ const Reports = () => {
                       </div>
                     </td>
                     <td className="px-6 py-6 font-bold text-sm text-slate-700 font-outfit">{formatCurrency(report.netPayroll)}</td>
-                    <td className="px-6 py-6 text-center font-bold text-xs text-slate-500">{report.employeeCount}</td>
+                    <td className="px-6 py-6 text-center font-bold text-xs text-slate-500 hidden sm:table-cell">{report.employeeCount}</td>
                     <td className="px-6 py-6 text-center">
                       <span className={`px-3 py-1.5 border rounded-full text-[9px] font-bold tracking-widest uppercase inline-flex items-center gap-1.5 ${
                         report.status === 'Completed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'
