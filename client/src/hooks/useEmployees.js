@@ -22,7 +22,7 @@ const useEmployees = () => {
       if (filters.status) queryParams.append('status', filters.status);
       if (filters.page) queryParams.append('page', filters.page);
 
-      const response = await api.get(`/employees?${queryParams.toString()}`);
+      const response = await api.get(`employees?${queryParams.toString()}`);
       setEmployees(response.data.employees || []);
       setPagination({
         currentPage: response.data.currentPage || 1,
@@ -48,7 +48,7 @@ const useEmployees = () => {
         baseSalary: Number(formData.baseSalary),
         taxPercent: Number(formData.taxPercent)
       };
-      await api.post('/employees', payload);
+      await api.post('employees', payload);
       toast.success('Employee added successfully!');
       
       // Refetch employees after adding
@@ -66,7 +66,7 @@ const useEmployees = () => {
 
   const removeEmployee = async (id) => {
     try {
-      await api.delete(`/employees/${id}`);
+      await api.delete(`employees/${id}`);
       toast.success('Employee removed successfully');
       
       // Update local state without refetching the whole list
