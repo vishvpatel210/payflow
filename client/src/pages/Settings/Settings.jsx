@@ -22,7 +22,8 @@ import {
   Mail,
   MapPin,
   Clock,
-  Download
+  Download,
+  Calendar
 } from 'lucide-react';
 import Layout from '../../components/Layout/Layout';
 import api from '../../config/axios';
@@ -35,10 +36,6 @@ const Settings = () => {
   const [settings, setSettings] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
-
   const fetchSettings = async () => {
     try {
       const response = await api.get('/settings');
@@ -50,7 +47,11 @@ const Settings = () => {
     }
   };
 
-  const handleSave = async (section) => {
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const handleSave = async () => {
     setSaving(true);
     try {
       const response = await api.put('/settings', settings);
@@ -479,7 +480,7 @@ const Settings = () => {
             <div className="px-10 py-6 bg-slate-50 border-t border-slate-100 flex justify-between items-center shrink-0">
                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Last Synced: {new Date(settings.updatedAt).toLocaleString()}</p>
                <button 
-                onClick={() => handleSave(activeTab)}
+                onClick={() => handleSave()}
                 disabled={saving}
                 className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all disabled:opacity-70"
                >
