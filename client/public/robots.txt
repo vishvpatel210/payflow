@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /employees
+Disallow: /payroll
+Disallow: /reports
+Disallow: /configuration
+Disallow: /settings
+Disallow: /history
+
+Sitemap: https://payflow-vishvpatel.vercel.app/sitemap.xml
