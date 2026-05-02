@@ -55,7 +55,7 @@ const useAuth = () => {
       
       // POST /api/auth/google -> { idToken }
       // Included extra fields to ensure compatibility with backend
-      const response = await api.post('/auth/google', { 
+      const response = await api.post('auth/google', { 
         idToken,
         email: result.user.email,
         uid: result.user.uid,

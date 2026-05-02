@@ -38,7 +38,7 @@ const Settings = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await api.get('/settings');
+      const response = await api.get('settings');
       setSettings(response.data);
     } catch (err) {
       toast.error('Failed to load settings');
@@ -54,7 +54,7 @@ const Settings = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const response = await api.put('/settings', settings);
+      const response = await api.put('settings', settings);
       setSettings(response.data);
       toast.success('Settings saved successfully');
     } catch (err) {

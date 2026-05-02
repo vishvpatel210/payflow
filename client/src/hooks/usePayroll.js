@@ -33,7 +33,7 @@ const usePayroll = (month, year) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.get(`/payroll/filter?month=${targetMonth}&year=${targetYear}`);
+      const response = await api.get(`payroll/filter?month=${targetMonth}&year=${targetYear}`);
       setPayrollData(response.data);
     } catch (err) {
       if (err.response?.status === 404) {
@@ -48,7 +48,7 @@ const usePayroll = (month, year) => {
 
   const fetchPayrollHistory = async () => {
     try {
-      const response = await api.get('/payroll/history');
+      const response = await api.get('payroll/history');
       setPayrollHistory(response.data || []);
     } catch (err) {
       console.error('Failed to fetch payroll history:', err);
@@ -58,7 +58,7 @@ const usePayroll = (month, year) => {
   const processMonthlyPayroll = async (period = {}) => {
     setProcessing(true);
     try {
-      const response = await api.post('/payroll/process', period);
+      const response = await api.post('payroll/process', period);
       setPayrollData(response.data);
       toast.success(`Payroll for ${response.data.month} processed successfully!`);
       fetchPayrollHistory(); // Refresh history
@@ -71,7 +71,7 @@ const usePayroll = (month, year) => {
 
   const updateEmployeeStatus = async (payrollId, employeeId, status) => {
     try {
-      const response = await api.put(`/payroll/${payrollId}/employee/${employeeId}`, { status });
+      const response = await api.put(`payroll/${payrollId}/employee/${employeeId}`, { status });
       setPayrollData(response.data);
       toast.success(status === 'Paid' ? '✅ Payment marked as Paid!' : 'Status updated!');
     } catch (err) {
@@ -82,7 +82,7 @@ const usePayroll = (month, year) => {
   const updateEmployeeDeduction = async (payrollId, employeeId, deductions) => {
     try {
       const response = await api.put(
-        `/payroll/${payrollId}/employee/${employeeId}/deduction`,
+        `payroll/${payrollId}/employee/${employeeId}/deduction`,
         { deductions: parseFloat(deductions) }
       );
       setPayrollData(response.data);
@@ -95,7 +95,7 @@ const usePayroll = (month, year) => {
   const updateEmployeeBonus = async (payrollId, employeeId, bonus) => {
     try {
       const response = await api.put(
-        `/payroll/${payrollId}/employee/${employeeId}/bonus`,
+        `payroll/${payrollId}/employee/${employeeId}/bonus`,
         { bonus: parseFloat(bonus) }
       );
       setPayrollData(response.data);
@@ -108,7 +108,7 @@ const usePayroll = (month, year) => {
   const updateEmployeeSalary = async (payrollId, employeeId, baseSalary) => {
     try {
       const response = await api.put(
-        `/payroll/${payrollId}/employee/${employeeId}/salary`,
+        `payroll/${payrollId}/employee/${employeeId}/salary`,
         { baseSalary: parseFloat(baseSalary) }
       );
       setPayrollData(response.data);
@@ -121,7 +121,7 @@ const usePayroll = (month, year) => {
   const updateEmployeePayrollFields = async (payrollId, employeeId, fields) => {
     try {
       const response = await api.put(
-        `/payroll/${payrollId}/employee/${employeeId}/fields`,
+        `payroll/${payrollId}/employee/${employeeId}/fields`,
         fields
       );
       setPayrollData(response.data);

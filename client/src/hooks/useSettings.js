@@ -7,7 +7,7 @@ const useSettings = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await api.get('/settings');
+      const response = await api.get('settings');
       setSettings(response.data);
     } catch (err) {
       console.error('Failed to load settings:', err);
