@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const SettingSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    unique: true
+  },
   company: {
     name: { type: String, default: 'The Atelier' },
     email: { type: String, default: 'admin@payflow.com' },

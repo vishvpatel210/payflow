@@ -5,7 +5,7 @@ const Activity = require('../models/Activity');
 exports.getAllEmployees = async (req, res) => {
   try {
     const { search, department, status, page = 1, limit = 10 } = req.query;
-    const query = {};
+    const query = { userId: req.user.id };
 
     if (search) {
       query.$or = [
@@ -37,7 +37,7 @@ exports.getAllEmployees = async (req, res) => {
 // GET /api/employees/:id
 exports.getEmployeeById = async (req, res) => {
   try {
-    const employee = await Employee.findById(req.params.id);
+    const employee = await Employee.findOne({ _id: req.params.id, userId: req.user.id });
     if (!employee) return res.status(404).json({ message: 'Employee not found' });
     res.status(200).json(employee);
   } catch (error) {
@@ -55,15 +55,16 @@ exports.createEmployee = async (req, res) => {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    // Check duplicate email
-    const duplicate = await Employee.findOne({ email });
+    // Check duplicate email for this user
+    const duplicate = await Employee.findOne({ email, userId: req.user.id });
     if (duplicate) return res.status(400).json({ message: 'Email already exists' });
 
-    const newEmployee = new Employee(req.body);
+    const newEmployee = new Employee({ ...req.body, userId: req.user.id });
     const savedEmployee = await newEmployee.save();
     
     // Log activity
     await Activity.create({
+      userId: req.user.id,
       employeeId: savedEmployee._id,
       action: 'Employee Added',
       description: `Added ${savedEmployee.name} to ${savedEmployee.department || 'Directory'}`,
@@ -79,8 +80,8 @@ exports.createEmployee = async (req, res) => {
 // PUT /api/employees/:id
 exports.updateEmployee = async (req, res) => {
   try {
-    const updatedEmployee = await Employee.findByIdAndUpdate(
-      req.params.id, 
+    const updatedEmployee = await Employee.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user.id }, 
       req.body, 
       { new: true, runValidators: true }
     );
@@ -88,6 +89,7 @@ exports.updateEmployee = async (req, res) => {
     
     // Log activity
     await Activity.create({
+      userId: req.user.id,
       employeeId: updatedEmployee._id,
       action: 'Employee Updated',
       description: `Updated profile for ${updatedEmployee.name}`,
@@ -103,11 +105,12 @@ exports.updateEmployee = async (req, res) => {
 // DELETE /api/employees/:id
 exports.deleteEmployee = async (req, res) => {
   try {
-    const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
+    const deletedEmployee = await Employee.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
     if (!deletedEmployee) return res.status(404).json({ message: 'Employee not found' });
     
     // Log activity
     await Activity.create({
+      userId: req.user.id,
       action: 'Employee Removed',
       description: `Removed ${deletedEmployee.name} from directory`,
       status: 'Completed'
@@ -122,11 +125,11 @@ exports.deleteEmployee = async (req, res) => {
 // GET /api/employees/stats
 exports.getEmployeeStats = async (req, res) => {
   try {
-    const totalEmployees = await Employee.countDocuments();
-    const activeEmployees = await Employee.countDocuments({ status: 'Active' });
-    const onboardingEmployees = await Employee.countDocuments({ status: 'Onboarding' });
+    const totalEmployees = await Employee.countDocuments({ userId: req.user.id });
+    const activeEmployees = await Employee.countDocuments({ status: 'Active', userId: req.user.id });
+    const onboardingEmployees = await Employee.countDocuments({ status: 'Onboarding', userId: req.user.id });
     
-    const employees = await Employee.find({});
+    const employees = await Employee.find({ userId: req.user.id });
     
     const totalPayroll = employees.reduce((acc, emp) => acc + (emp.baseSalary || 0), 0);
     

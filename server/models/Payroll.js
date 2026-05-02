@@ -41,6 +41,11 @@ const employeeSnapshotSchema = new mongoose.Schema({
 });
 
 const payrollSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   month: {
     type: String,
     required: true

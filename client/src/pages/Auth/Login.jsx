@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useAuth from '../../hooks/useAuth';
+import SEO from '../../components/common/SEO';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -70,6 +71,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row font-sans overflow-hidden bg-white">
+      <SEO title="Secure Login" />
       {/* Left Side - Branding & Inspiration */}
       <motion.div 
         initial={{ x: -100, opacity: 0 }}

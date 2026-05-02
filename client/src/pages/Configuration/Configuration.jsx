@@ -47,7 +47,7 @@ const Configuration = () => {
   };
 
   return (
-    <Layout>
+    <Layout title="Tax & Salary Configuration">
       <div className="max-w-6xl mx-auto">
         {/* Top Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-6">

@@ -20,8 +20,9 @@ import { useGlobalSettings } from '../../context/SettingsContext';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import { useState } from 'react';
+import SEO from '../common/SEO';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, title }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { settings } = useGlobalSettings();
@@ -45,6 +46,7 @@ const Layout = ({ children }) => {
 
   return (
     <div className="flex h-screen w-full bg-[#F8FAFC] font-sans overflow-hidden">
+      <SEO title={title} />
       {/* Sidebar */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       {/* Main Content */}
