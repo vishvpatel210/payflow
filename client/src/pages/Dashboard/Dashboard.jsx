@@ -42,7 +42,7 @@ const Dashboard = () => {
 
   if (loading || !stats) {
     return (
-      <Layout>
+      <Layout title="Dashboard">
         <div className="flex-1 flex flex-col items-center justify-center h-full min-h-[60vh]">
           <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mb-4" />
           <h2 className="text-lg font-bold text-slate-700">Loading Dashboard...</h2>
@@ -54,7 +54,7 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <Layout>
+      <Layout title="Dashboard">
         <div className="flex-1 flex flex-col items-center justify-center h-full min-h-[60vh]">
           <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
           <h2 className="text-lg font-bold text-slate-700">Failed to load dashboard</h2>
@@ -65,7 +65,7 @@ const Dashboard = () => {
   }
 
   return (
-    <Layout>
+    <Layout title="Dashboard">
       {/* Header with Selectors */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
         <div>

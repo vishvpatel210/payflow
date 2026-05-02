@@ -149,7 +149,7 @@ const Payroll = () => {
   };
 
   return (
-    <Layout>
+    <Layout title="Payroll Processing">
       <div className="flex flex-col gap-8">
         
         {/* ── Main Content: Full Width ── */}

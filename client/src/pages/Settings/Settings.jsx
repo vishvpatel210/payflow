@@ -99,7 +99,7 @@ const Settings = () => {
 
   if (loading || !settings) {
     return (
-      <Layout>
+      <Layout title="System Settings">
         <div className="flex flex-col items-center justify-center h-[60vh]">
           <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mb-4" />
           <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Syncing Configuration...</p>
@@ -113,7 +113,7 @@ const Settings = () => {
   );
 
   return (
-    <Layout>
+    <Layout title="System Settings">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
           <div>

@@ -6,12 +6,12 @@ const Activity = require('../models/Activity');
 // POST /api/payroll/process
 exports.processPayroll = async (req, res) => {
   try {
-    const settings = await Setting.findOne() || new Setting();
+    const settings = await Setting.findOne({ userId: req.user.id }) || new Setting();
     const defaultTax = settings.tax?.incomeTaxPercent || 10;
     const { taxPercent: globalTaxPercent = defaultTax, month, year } = req.body || {};
 
-    // Fetch only active employees for payroll processing
-    const employees = await Employee.find({ status: 'Active' });
+    // Fetch only active employees for this user
+    const employees = await Employee.find({ status: 'Active', userId: req.user.id });
 
     if (!employees || employees.length === 0) {
       return res.status(400).json({ msg: 'No employees found to process payroll.' });
@@ -58,8 +58,8 @@ exports.processPayroll = async (req, res) => {
       15
     );
 
-    // Check if payroll for this month already exists
-    let payroll = await Payroll.findOne({ month: currentMonth, year: currentYear });
+    // Check if payroll for this month already exists for this user
+    let payroll = await Payroll.findOne({ month: currentMonth, year: currentYear, userId: req.user.id });
 
     if (payroll) {
       // Update existing record
@@ -74,6 +74,7 @@ exports.processPayroll = async (req, res) => {
     } else {
       // Create new record
       payroll = new Payroll({
+        userId:          req.user.id,
         month:           currentMonth,
         year:            currentYear,
         cycleDate:       currentDate,
@@ -93,6 +94,7 @@ exports.processPayroll = async (req, res) => {
 
     // Log Activity
     await Activity.create({
+      userId: req.user.id,
       action: 'Payroll Processed',
       description: `Processed ${currentMonth} ${currentYear} payroll for ${employeeSnapshots.length} employees`,
       status: 'Completed'
@@ -109,7 +111,7 @@ exports.processPayroll = async (req, res) => {
 // GET /api/payroll/current
 exports.getCurrentPayroll = async (req, res) => {
   try {
-    const latestPayroll = await Payroll.findOne().sort({ createdAt: -1 });
+    const latestPayroll = await Payroll.findOne({ userId: req.user.id }).sort({ createdAt: -1 });
     
     if (!latestPayroll) {
       return res.status(404).json({ msg: 'No payroll records found.' });
@@ -131,7 +133,7 @@ exports.getPayrollByMonth = async (req, res) => {
       return res.status(400).json({ msg: 'Month and Year are required' });
     }
 
-    const payroll = await Payroll.findOne({ month, year: parseInt(year) });
+    const payroll = await Payroll.findOne({ month, year: parseInt(year), userId: req.user.id });
     
     if (!payroll) {
       return res.status(404).json({ msg: 'No payroll records found for this month.' });
@@ -147,7 +149,7 @@ exports.getPayrollByMonth = async (req, res) => {
 // GET /api/payroll/history
 exports.getPayrollHistory = async (req, res) => {
   try {
-    const history = await Payroll.find()
+    const history = await Payroll.find({ userId: req.user.id })
       .sort({ createdAt: -1 })
       .select('month year totalSalary netPayroll status employees createdAt');
     
@@ -180,7 +182,7 @@ exports.updateEmployeePayrollStatus = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid status value' });
     }
 
-    const payroll = await Payroll.findById(payrollId);
+    const payroll = await Payroll.findOne({ _id: payrollId, userId: req.user.id });
     if (!payroll) return res.status(404).json({ msg: 'Payroll not found' });
 
     const empIndex = payroll.employees.findIndex(
@@ -208,7 +210,7 @@ exports.updateEmployeeDeduction = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid deduction value' });
     }
 
-    const payroll = await Payroll.findById(payrollId);
+    const payroll = await Payroll.findOne({ _id: payrollId, userId: req.user.id });
     if (!payroll) return res.status(404).json({ msg: 'Payroll not found' });
 
     const empIndex = payroll.employees.findIndex(
@@ -247,7 +249,7 @@ exports.updateEmployeeBonus = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid bonus value' });
     }
 
-    const payroll = await Payroll.findById(payrollId);
+    const payroll = await Payroll.findOne({ _id: payrollId, userId: req.user.id });
     if (!payroll) return res.status(404).json({ msg: 'Payroll not found' });
 
     const empIndex = payroll.employees.findIndex(
@@ -284,7 +286,7 @@ exports.updateEmployeeBaseSalary = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid salary value' });
     }
 
-    const payroll = await Payroll.findById(payrollId);
+    const payroll = await Payroll.findOne({ _id: payrollId, userId: req.user.id });
     if (!payroll) return res.status(404).json({ msg: 'Payroll not found' });
 
     const empIndex = payroll.employees.findIndex(
@@ -315,7 +317,7 @@ exports.updateEmployeePayrollFields = async (req, res) => {
     const { baseSalary, deductions, bonus } = req.body || {};
     const { payrollId, employeeId } = req.params;
 
-    const payroll = await Payroll.findById(payrollId);
+    const payroll = await Payroll.findOne({ _id: payrollId, userId: req.user.id });
     if (!payroll) return res.status(404).json({ msg: 'Payroll not found' });
 
     const empIndex = payroll.employees.findIndex(

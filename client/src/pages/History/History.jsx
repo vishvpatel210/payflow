@@ -60,7 +60,7 @@ const History = () => {
   };
 
   return (
-    <Layout>
+    <Layout title="Activity History">
       <div className="flex flex-col gap-8">
         
         <div className="mb-10 flex justify-between items-end">

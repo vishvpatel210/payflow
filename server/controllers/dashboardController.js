@@ -5,11 +5,11 @@ const Setting = require('../models/Setting');
 // GET /api/dashboard/stats
 exports.getDashboardStats = async (req, res) => {
   try {
-    const settings = await Setting.findOne() || new Setting();
+    const settings = await Setting.findOne({ userId: req.user.id }) || new Setting();
     const { month, year } = req.query;
     
-    // Fetch all employees for master stats
-    const allEmployees = await Employee.find({});
+    // Fetch all employees for this user
+    const allEmployees = await Employee.find({ userId: req.user.id });
     const totalEmployees = allEmployees.length;
     const activeCount = allEmployees.filter(e => e.status === 'Active').length;
     const onboardingCount = allEmployees.filter(e => e.status === 'Onboarding').length;
@@ -31,10 +31,10 @@ exports.getDashboardStats = async (req, res) => {
     // Try to find processed payroll for the selected month/year
     let payrollRecord = null;
     if (month && year) {
-      payrollRecord = await Payroll.findOne({ month, year: parseInt(year) });
+      payrollRecord = await Payroll.findOne({ month, year: parseInt(year), userId: req.user.id });
     } else {
-      // Default to latest processed payroll
-      payrollRecord = await Payroll.findOne().sort({ createdAt: -1 });
+      // Default to latest processed payroll for this user
+      payrollRecord = await Payroll.findOne({ userId: req.user.id }).sort({ createdAt: -1 });
     }
 
     if (payrollRecord) {
@@ -83,8 +83,8 @@ exports.getDashboardStats = async (req, res) => {
       { name: 'Benefits', value: totalPayroll * (settings.tax?.otherDeductionsPercent / 100 || 0.05), color: '#c7d2fe' },
     ];
 
-    // Trends (From historical payroll records)
-    const last6Payrolls = await Payroll.find().sort({ createdAt: -1 }).limit(6);
+    // Trends (From historical payroll records for this user)
+    const last6Payrolls = await Payroll.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(6);
     const payrollTrends = last6Payrolls.map(p => ({
       name: p.month.substring(0, 3).toUpperCase(),
       value: p.totalSalary
@@ -96,8 +96,8 @@ exports.getDashboardStats = async (req, res) => {
       payrollTrends.push({ name: currentMonthStr, value: totalPayroll });
     }
 
-    // Recent activity (Last 5 employees from Master)
-    const recentActivityRaw = await Employee.find().sort({ createdAt: -1 }).limit(5);
+    // Recent activity (Last 5 employees for this user)
+    const recentActivityRaw = await Employee.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(5);
     const recentActivity = recentActivityRaw.map(emp => {
       let action = 'New Hire Added';
       let cycle = 'Onboarding Process';

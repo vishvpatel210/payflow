@@ -6,9 +6,9 @@ const Activity = require('../models/Activity');
 // @access  Private
 exports.getSettings = async (req, res) => {
   try {
-    let settings = await Setting.findOne();
+    let settings = await Setting.findOne({ userId: req.user.id });
     if (!settings) {
-      settings = new Setting();
+      settings = new Setting({ userId: req.user.id });
       await settings.save();
     }
     res.json(settings);
@@ -23,9 +23,9 @@ exports.getSettings = async (req, res) => {
 // @access  Private
 exports.updateSettings = async (req, res) => {
   try {
-    let settings = await Setting.findOne();
+    let settings = await Setting.findOne({ userId: req.user.id });
     if (!settings) {
-      settings = new Setting(req.body);
+      settings = new Setting({ ...req.body, userId: req.user.id });
     } else {
       // Deep merge or specific updates
       Object.assign(settings, req.body);
@@ -33,8 +33,9 @@ exports.updateSettings = async (req, res) => {
     await settings.save();
 
     await Activity.create({
+      userId: req.user.id,
       action: 'Settings Updated',
-      description: 'Global system configuration was modified',
+      description: 'Payroll system configuration was modified',
       status: 'Completed'
     });
 
@@ -50,8 +51,8 @@ exports.updateSettings = async (req, res) => {
 // @access  Private
 exports.resetSettings = async (req, res) => {
   try {
-    await Setting.deleteMany({});
-    const settings = new Setting();
+    await Setting.deleteOne({ userId: req.user.id });
+    const settings = new Setting({ userId: req.user.id });
     await settings.save();
     res.json(settings);
   } catch (err) {

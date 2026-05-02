@@ -2,7 +2,7 @@ const Activity = require('../models/Activity');
 
 exports.getActivities = async (req, res) => {
   try {
-    const activities = await Activity.find()
+    const activities = await Activity.find({ userId: req.user.id })
       .populate('employeeId', 'name avatar role department')
       .sort({ createdAt: -1 })
       .limit(100);

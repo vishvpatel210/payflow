@@ -39,7 +39,7 @@ const Employees = () => {
 
 
   return (
-    <Layout>
+    <Layout title="Employee Management">
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-slate-800 font-outfit mb-2">Employee Directory</h1>
